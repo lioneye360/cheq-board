@@ -7,7 +7,7 @@ import Column from "../Column/Column";
 
 const createBoard = (title, items) => {
     return {
-        id: `board-${new Date().getTime()}`,
+        id: `board-${Date.now() + (Math.random()*1000000).toFixed(0)}`,
         title: title ? title : 'Board Title',
         items: items && Array.isArray(items) ? items : []
     }
@@ -31,7 +31,7 @@ const getItems = (count, offset = 0, title) => {
     }
 };
 
-const reorder = (list, startIndex, endIndex) => {
+const reorder2 = (list, startIndex, endIndex) => {
   const result = Array.from(list);
   const [removed] = result.splice(startIndex, 1);
   result.splice(endIndex, 0, removed);
@@ -108,6 +108,53 @@ function App() {
         );
     };
 
+
+    const getListStyle = isDraggingOver => ({
+        background: isDraggingOver ? 'lightblue' : 'lightgrey',
+        display: 'flex',
+        padding: grid,
+        overflow: 'auto',
+    });
+
+    const grid = 8;
+
+    const getItemStyle = (isDragging, draggableStyle) => ({
+        // some basic styles to make the items look a bit nicer
+        userSelect: 'none',
+        padding: grid * 2,
+        margin: `0 ${grid}px 0 0`,
+
+        // change background colour if dragging
+        background: isDragging ? 'lightgreen' : 'grey',
+
+        // styles we need to apply on draggables
+        ...draggableStyle,
+    });
+
+    const onDragEnd2 = (result) => {
+        // dropped outside the list
+        if (!result.destination) {
+            return;
+        }
+
+        const items = reorder2(
+            state.items,
+            result.source.index,
+            result.destination.index
+        );
+        setState([...items]);
+
+    };
+
+// a little function to help us with reordering the result
+    const reorder = (list, startIndex, endIndex) => {
+        const result = Array.from(list);
+        const [removed] = result.splice(startIndex, 1);
+        result.splice(endIndex, 0, removed);
+
+        return result;
+    };
+
   return (
       <div>
         <button
@@ -120,10 +167,38 @@ function App() {
         </button>
 
         <div style={{ display: "flex" }}>
-          <DragDropContext onDragEnd={onDragEnd}>
-            {state.map((el, ind) => (
-                <Column key={ind} value={el} ind={ind} onClickDelete={(index) => deleteItem(ind, index)} onClickAdd={() => addItem(ind)}/>
-            ))}
+          <DragDropContext onDragEnd={onDragEnd2}>
+              <Droppable droppableId="droppable" direction="horizontal">
+                  {(provided, snapshot) => (
+                      <div
+                          ref={provided.innerRef}
+                          style={getListStyle(snapshot.isDraggingOver)}
+                          {...provided.droppableProps}
+                      >
+
+                          {state.map((el, ind) => (
+                            <Draggable key={el.id} draggableId={el.id} index={ind}>
+                                {(provided, snapshot) => (
+                                    <div
+                                        ref={provided.innerRef}
+                                        {...provided.draggableProps}
+                                        {...provided.dragHandleProps}
+                                        style={getItemStyle(
+                                            snapshot.isDragging,
+                                            provided.draggableProps.style
+                                        )}
+                                    >
+                                        <div>{el.title}</div>
+                                        <Column key={ind} value={el} ind={ind} onClickDelete={(index) => deleteItem(ind, index)} onClickAdd={() => addItem(ind)}/>
+                                    </div>
+                                )}
+                            </Draggable>
+                        ))}
+
+                          {provided.placeholder}
+                      </div>
+                  )}
+              </Droppable>
           </DragDropContext>
         </div>
       </div>
