@@ -26,7 +26,7 @@ const getListStyle = isDraggingOver => ({
 function Column({value, ind, onClickDelete, onClickAdd}) {
 
   return (
-      <Droppable droppableId={`${ind}`}>
+      <Droppable droppableId={`${ind}`} type="droppableItem">
           {(provided, snapshot) => (
               <div
                   ref={provided.innerRef}

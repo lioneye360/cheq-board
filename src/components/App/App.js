@@ -21,24 +21,6 @@ const createItem = (title, content) => {
     }
 }
 
-const getItems = (count, offset = 0, title) => {
-    return {
-        title: title ? title : 'myTitle',
-        items: Array.from({ length: count }, (v, k) => k).map(k => ({
-            id: `item-${k + offset}-${new Date().getTime()}`,
-            content: `item ${k + offset}`,
-        }))
-    }
-};
-
-const reorder2 = (list, startIndex, endIndex) => {
-  const result = Array.from(list);
-  const [removed] = result.splice(startIndex, 1);
-  result.splice(endIndex, 0, removed);
-
-  return result;
-};
-
 /**
  * Moves an item from one list to another list.
  */
@@ -75,6 +57,13 @@ function App() {
     const sInd = +source.droppableId;
     const dInd = +destination.droppableId;
 
+    if (result.type === "droppableColumn") {
+      const columns = reorder(state, source.index, destination.index);
+      const newState = [...columns];
+      setState(newState);
+      return;
+    }
+
     // dropped inside the same list
     if (sInd === dInd) {
       const items = reorder(state[sInd].items, source.index, destination.index);
@@ -87,7 +76,6 @@ function App() {
       const newState = [...state];
       newState[sInd].items = result[sInd];
       newState[dInd].items = result[dInd];
-
       setState(newState);
     }
   }
@@ -131,21 +119,6 @@ function App() {
         ...draggableStyle,
     });
 
-    const onDragEnd2 = (result) => {
-        // dropped outside the list
-        if (!result.destination) {
-            return;
-        }
-
-        const items = reorder2(
-            state.items,
-            result.source.index,
-            result.destination.index
-        );
-        setState([...items]);
-
-    };
-
 // a little function to help us with reordering the result
     const reorder = (list, startIndex, endIndex) => {
         const result = Array.from(list);
@@ -167,8 +140,8 @@ function App() {
         </button>
 
         <div style={{ display: "flex" }}>
-          <DragDropContext onDragEnd={onDragEnd2}>
-              <Droppable droppableId="droppable" direction="horizontal">
+          <DragDropContext onDragEnd={onDragEnd}>
+              <Droppable droppableId="board-drop" type="droppableColumn" direction="horizontal">
                   {(provided, snapshot) => (
                       <div
                           ref={provided.innerRef}
