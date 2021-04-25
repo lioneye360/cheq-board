@@ -19,3 +19,11 @@ export const updateBoard = payload => {
         item: payload
     };
 };
+
+export const updateColumn = (id, payload) => {
+    return {
+        type: "UPDATE_COLUMN",
+        item: payload,
+        columnId: id,
+    };
+};

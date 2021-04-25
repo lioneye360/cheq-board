@@ -27,6 +27,12 @@ const boardReducer = (state = initialState, action) => {
                 ...state,
                 board: action.item
             }
+        case 'UPDATE_COLUMN':
+            return {
+                ...state,
+                board: state.board.map(
+                    (column) => column.id === action.columnId ? {...action.item} : column)
+            }
         default:
             return state;
     }
