@@ -1,10 +1,11 @@
 import React, {useState} from "react";
 import {Droppable} from "react-beautiful-dnd";
 import Card from "../Card/Card";
-import {Grid, Modal} from "@material-ui/core";
+import {Grid, IconButton, Modal} from "@material-ui/core";
 import useStyles from "./Column.style";
 import {useDispatch} from "react-redux";
-import {updateCard, updateColumn} from "../../state/actions/board-actions";
+import {updateColumn} from "../../state/actions/board-actions";
+import AddIcon from '@material-ui/icons/Add';
 
 const grid = 8;
 
@@ -59,9 +60,9 @@ function Column({value, ind, onClickDelete, onClickAdd}) {
                   {provided.placeholder}
                   </Grid>
 
-                  <button type="button" onClick={onClickAdd}>
-                      Add new item
-                  </button>
+                  <IconButton type="button" size={"small"} onClick={onClickAdd}>
+                      <AddIcon/> Add another card
+                  </IconButton>
 
                   <Modal
                       open={open}

@@ -1,9 +1,8 @@
 import React from "react";
 import { Draggable } from "react-beautiful-dnd";
-import {Grid, Modal, Paper} from "@material-ui/core";
+import {Grid, IconButton, Modal, Paper} from "@material-ui/core";
 import useStyles from "./Card.style";
-import {useDispatch} from "react-redux";
-import {updateColumn} from "../../state/actions/board-actions";
+import DeleteIcon from '@material-ui/icons/Delete';
 
 const grid = 8;
 
@@ -23,7 +22,6 @@ const getItemStyle = (isDragging, draggableStyle) => ({
 function Card({item, index, onClickDelete, onCardChange}) {
     const [open, setOpen] = React.useState(false);
     const classes = useStyles();
-    const dispatch = useDispatch();
 
     const handleOpen = () => {
         setOpen(true);
@@ -60,12 +58,12 @@ function Card({item, index, onClickDelete, onCardChange}) {
                           <h3 style={{'fontSize': '16px', 'fontWeight': '400', textAlign: 'left' }} onClick={handleOpen}>{item.title}</h3>
                       </Grid>
                       <Grid item xs={3}>
-                          <button
+                          <IconButton
                               type="button"
                               onClick={onClickDelete}
                           >
-                              delete
-                          </button>
+                              <DeleteIcon/>
+                          </IconButton>
                       </Grid>
 
                   </Grid>

@@ -85,12 +85,13 @@ function App() {
   return (
       <div style={{height: '100%', background: 'linear-gradient( 45deg, #2ACCE5, #0079bf, #315989, #c377e0)'}}>
         <button
+            style={{ margin: grid, borderRadius: '3px' }}
             type="button"
             onClick={() => {
                 dispatch(addColumn(createBoard()));
             }}
         >
-          Add new Board
+          + Add another board
         </button>
 
         <div style={{ display: "flex" }}>
