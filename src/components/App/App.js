@@ -85,7 +85,7 @@ function App() {
   return (
       <div style={{height: '100%', background: 'linear-gradient( 45deg, #2ACCE5, #0079bf, #315989, #c377e0)'}}>
         <button
-            style={{ margin: grid, borderRadius: '3px' }}
+            style={{ margin: grid, borderRadius: '3px', border: 'none' }}
             type="button"
             onClick={() => {
                 dispatch(addColumn(createBoard()));
