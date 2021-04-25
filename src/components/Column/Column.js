@@ -1,21 +1,9 @@
-import React, { useState } from "react";
-import {Draggable, Droppable} from "react-beautiful-dnd";
+import React from "react";
+import {Droppable} from "react-beautiful-dnd";
 import Card from "../Card/Card";
 
 const grid = 8;
 
-const getItemStyle = (isDragging, draggableStyle) => ({
-  // some basic styles to make the items look a bit nicer
-  userSelect: "none",
-  padding: grid * 2,
-  margin: `0 0 ${grid}px 0`,
-
-  // change background colour if dragging
-  background: isDragging ? "lightgreen" : "grey",
-
-  // styles we need to apply on draggables
-  ...draggableStyle
-});
 const getListStyle = isDraggingOver => ({
     backgroundColor: isDraggingOver ? "lightblue" : "#ebecf0",
     padding: grid,

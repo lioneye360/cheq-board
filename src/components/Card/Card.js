@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { Draggable } from "react-beautiful-dnd";
 
 const grid = 8;
@@ -14,12 +14,6 @@ const getItemStyle = (isDragging, draggableStyle) => ({
 
   // styles we need to apply on draggables
   ...draggableStyle
-});
-const getListStyle = isDraggingOver => ({
-    backgroundColor: isDraggingOver ? "lightblue" : "#ebecf0",
-    padding: grid,
-    width: 250,
-    margin: '0 4px'
 });
 
 function Card({item, index, onClickDelete}) {

@@ -1,53 +1,15 @@
-import React, { useState } from "react";
+import React from "react";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
-import Card from "../Card/Card";
 import Column from "../Column/Column";
-
-// fake data generator
-
-const createBoard = (title, items) => {
-    return {
-        id: `board-${Date.now() + (Math.random()*1000000).toFixed(0)}`,
-        title: title ? title : 'Board Title',
-        items: items && Array.isArray(items) ? items : []
-    }
-}
-
-const createItem = (title, content) => {
-    return {
-        id: `item-${new Date().getTime()}`,
-        title: title ? title : 'Item Title',
-        content: content ? content : '',
-    }
-}
-
-/**
- * Moves an item from one list to another list.
- */
-const move = (source, destination, droppableSource, droppableDestination) => {
-  const sourceClone = Array.from(source);
-  const destClone = Array.from(destination);
-  const [removed] = sourceClone.splice(droppableSource.index, 1);
-
-  destClone.splice(droppableDestination.index, 0, removed);
-
-  const result = {};
-  result[droppableSource.droppableId] = sourceClone;
-  result[droppableDestination.droppableId] = destClone;
-
-  return result;
-};
-
-const INITIAL_BOARDS = [
-    createBoard('To-do'),
-    createBoard('Progress'),
-    createBoard('Done')
-]
+import {useDispatch, useSelector} from "react-redux";
+import {addColumn, addItem, updateBoard} from "../../state/actions/board-actions";
+import {createBoard, createItem, move} from "../../sevices/boardHelper";
 
 function App() {
-  const [state, setState] = useState(INITIAL_BOARDS);
+  const dispatch = useDispatch();
+  const board = useSelector(state => state.app.board);
 
-  function onDragEnd(result) {
+    function onDragEnd(result) {
     const { source, destination } = result;
 
     // dropped outside lists
@@ -58,44 +20,37 @@ function App() {
     const dInd = +destination.droppableId;
 
     if (result.type === "droppableColumn") {
-      const columns = reorder(state, source.index, destination.index);
-      const newState = [...columns];
-      setState(newState);
+      const columns = reorder(board, source.index, destination.index);
+      const newColumns = [...columns];
+      dispatch(updateBoard(newColumns));
       return;
     }
 
     // dropped inside the same list
     if (sInd === dInd) {
-      const items = reorder(state[sInd].items, source.index, destination.index);
-      const newState = [...state];
+      const items = reorder(board[sInd].items, source.index, destination.index);
+      const newState = [...board];
       newState[sInd].items = items;
-      setState(newState);
+      dispatch(updateBoard(newState));
     }
     else {
-      const result = move(state[sInd].items, state[dInd].items, source, destination);
-      const newState = [...state];
+      const result = move(board[sInd].items, board[dInd].items, source, destination);
+      const newState = [...board];
       newState[sInd].items = result[sInd];
       newState[dInd].items = result[dInd];
-      setState(newState);
+      dispatch(updateBoard(newState));
     }
   }
 
     const deleteItem = (boardIndex, itemIndex) => {
-        const newState = [...state];
+        const newState = [...board];
         newState[boardIndex].items.splice(itemIndex, 1);
-        setState(
-            newState
-        );
+        dispatch(updateBoard(newState));
     };
 
-    const addItem = (boardIndex) => {
-        const newState = [...state];
-        newState[boardIndex].items.push(createItem());
-        setState(
-            newState
-        );
+    const addItemById = (columnId) => {
+        dispatch(addItem(columnId, createItem()));
     };
-
 
     const getListStyle = isDraggingOver => ({
         background: isDraggingOver ? 'lightblue' : 'lightgrey',
@@ -107,19 +62,17 @@ function App() {
     const grid = 8;
 
     const getItemStyle = (isDragging, draggableStyle) => ({
-        // some basic styles to make the items look a bit nicer
         userSelect: 'none',
         padding: grid * 2,
         margin: `0 ${grid}px 0 0`,
 
-        // change background colour if dragging
+        // change background color if dragging
         background: isDragging ? 'lightgreen' : 'grey',
 
-        // styles we need to apply on draggables
         ...draggableStyle,
     });
 
-// a little function to help us with reordering the result
+    // reordering the result
     const reorder = (list, startIndex, endIndex) => {
         const result = Array.from(list);
         const [removed] = result.splice(startIndex, 1);
@@ -133,7 +86,7 @@ function App() {
         <button
             type="button"
             onClick={() => {
-              setState([...state, createBoard()]);
+                dispatch(addColumn(createBoard()));
             }}
         >
           Add new Board
@@ -149,7 +102,7 @@ function App() {
                           {...provided.droppableProps}
                       >
 
-                          {state.map((el, ind) => (
+                          {board.map((el, ind) => (
                             <Draggable key={el.id} draggableId={el.id} index={ind}>
                                 {(provided, snapshot) => (
                                     <div
@@ -162,7 +115,9 @@ function App() {
                                         )}
                                     >
                                         <div>{el.title}</div>
-                                        <Column key={ind} value={el} ind={ind} onClickDelete={(index) => deleteItem(ind, index)} onClickAdd={() => addItem(ind)}/>
+                                        <Column key={ind} value={el} ind={ind}
+                                                onClickDelete={(index) => deleteItem(ind, index)}
+                                                onClickAdd={() => addItemById(el.id)}/>
                                     </div>
                                 )}
                             </Draggable>
