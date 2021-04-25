@@ -1,5 +1,7 @@
 import React from "react";
 import { Draggable } from "react-beautiful-dnd";
+import {Paper} from "@material-ui/core";
+import useStyles from "./Card.style";
 
 const grid = 8;
 
@@ -10,13 +12,14 @@ const getItemStyle = (isDragging, draggableStyle) => ({
   margin: `0 0 ${grid}px 0`,
 
   // change background colour if dragging
-  background: isDragging ? "lightgreen" : "grey",
+  background: isDragging ? "lightgreen" : "#ffffff",
 
   // styles we need to apply on draggables
   ...draggableStyle
 });
 
 function Card({item, index, onClickDelete}) {
+    const classes = useStyles();
 
   return (
       <Draggable
@@ -24,21 +27,15 @@ function Card({item, index, onClickDelete}) {
           index={index}
       >
           {(provided, snapshot) => (
-              <div
-                  ref={provided.innerRef}
-                  {...provided.draggableProps}
-                  {...provided.dragHandleProps}
-                  style={getItemStyle(
-                      snapshot.isDragging,
-                      provided.draggableProps.style
-                  )}
-              >
-                  <div
-                      style={{
-                          display: "flex",
-                          justifyContent: "space-around"
-                      }}
-                  >
+
+                  <Paper className={classes.paper}
+                        ref={provided.innerRef}
+                        {...provided.draggableProps}
+                        {...provided.dragHandleProps}
+                        style={getItemStyle(
+                            snapshot.isDragging,
+                            provided.draggableProps.style
+                        )}>
                       {item.content}
                       <button
                           type="button"
@@ -46,8 +43,7 @@ function Card({item, index, onClickDelete}) {
                       >
                           delete
                       </button>
-                  </div>
-              </div>
+                  </Paper>
           )}
       </Draggable>
   );

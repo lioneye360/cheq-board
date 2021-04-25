@@ -53,7 +53,7 @@ function App() {
     };
 
     const getListStyle = isDraggingOver => ({
-        background: isDraggingOver ? 'lightblue' : 'lightgrey',
+        background: isDraggingOver ? 'lightblue' : 'transparent',
         display: 'flex',
         padding: grid,
         overflow: 'auto',
@@ -65,9 +65,10 @@ function App() {
         userSelect: 'none',
         padding: grid * 2,
         margin: `0 ${grid}px 0 0`,
+        borderRadius: '4px',
 
         // change background color if dragging
-        background: isDragging ? 'lightgreen' : 'grey',
+        background: isDragging ? 'lightgreen' : '#ebecf0',
 
         ...draggableStyle,
     });
@@ -82,7 +83,7 @@ function App() {
     };
 
   return (
-      <div>
+      <div style={{height: '100%', background: 'linear-gradient( 45deg, #2ACCE5, #0079bf, #315989, #c377e0)'}}>
         <button
             type="button"
             onClick={() => {
@@ -114,7 +115,6 @@ function App() {
                                             provided.draggableProps.style
                                         )}
                                     >
-                                        <div>{el.title}</div>
                                         <Column key={ind} value={el} ind={ind}
                                                 onClickDelete={(index) => deleteItem(ind, index)}
                                                 onClickAdd={() => addItemById(el.id)}/>
