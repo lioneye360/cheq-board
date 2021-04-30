@@ -49,7 +49,7 @@ function Column({value, ind, onClickDelete, onClickAdd}) {
                   style={getListStyle(snapshot.isDraggingOver)}
                   {...provided.droppableProps}
               >
-                  <h2 style={{'fontSize': '20px', 'lineHeight': '24px', 'fontWeight': '600' }} onClick={handleOpen}>{value.title}</h2>
+                  <h2 className={classes.title} onClick={handleOpen}>{value.title}</h2>
 
                   <Grid container spacing={0}>
                   {value.items.map((item, index) => (

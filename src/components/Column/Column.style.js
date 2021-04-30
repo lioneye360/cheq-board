@@ -5,6 +5,14 @@ const useStyles = makeStyles((theme) => ({
     textAlign: 'center'
   },
 
+  title: {
+    'fontSize': '20px',
+    'lineHeight': '24px',
+    'fontWeight': '600',
+    'width': '50%',
+    'cursor': 'pointer'
+  },
+
   modal: {
     display: 'flex',
     alignItems: 'center',

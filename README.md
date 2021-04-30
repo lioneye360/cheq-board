@@ -9,4 +9,7 @@
 3. Open [http://localhost:3000](http://localhost:3000) to view app in the browser.
 
 
+## Instructions:
+1. Click on column title to edit
+2. Hover card to show edit/delete buttons
 
