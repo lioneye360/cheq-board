@@ -12,4 +12,6 @@
 ## Instructions:
 1. Click on column title to edit
 2. Hover card to show edit/delete buttons
+3. Drag&Drop column to change order
+4. Drag&Drop card to change order inside parent column or any other column
 
